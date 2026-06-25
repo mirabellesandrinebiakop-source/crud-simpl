@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f4f6f9;
+    font-family: Arial, sans-serif;
+    padding: 40px;
+}
+
+.container {
+    width: 900px;
+    margin: auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+form {
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1d4ed8;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #2563eb;
+    color: white;
+    padding: 15px;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #dddddd;
+    text-align: center;
+}
+.dark-mode {
+    background-color: #111827;
+    color: white;
+}
+
+.dark-mode .container {
+    background-color: #1f2937;
+}
+
+.dark-mode input {
+    background-color: #374151;
+    color: white;
+    border: 1px solid #555;
+}
+
+.dark-mode table {
+    color: white;
+}
+
+.dark-mode th {
+    background-color: #111827;
+}
+
+.dark-mode td {
+    border-bottom: 1px solid #444;
+}
+
+.dark-mode button {
+    background-color: #f59e0b;
+    color: black;
+}
+
+.dark-mode button:hover {
+    background-color: #d97706;
+}
