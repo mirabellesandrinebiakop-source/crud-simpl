@@ -1,96 +1,237 @@
 let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-let indexEdition = null;
+
+let idEdition = null;
+let pageActuelle = 1;
+
+let ordreNom = true;
+let ordreEmail = true;
+let ordreDate = true;
+
+const parPage = 5;
 const form = document.getElementById("userForm");
 const toggleDark = document.getElementById("toggleDark");
 const nom = document.getElementById("nom");
-const recherche = document.getElementById("recherche");
 const email = document.getElementById("email");
+const recherche = document.getElementById("recherche");
 const tbody = document.getElementById("tbody");
+const totalUsers = document.getElementById("totalUsers");
+const totalResults = document.getElementById("totalResults");
+const toast = document.getElementById("toast");
+
+
+function afficherToast(message, type = "success") {
+    toast.textContent = message;
+    toast.className = "toast show " + type;
+
+    setTimeout(() => {
+        toast.className = "toast";
+    }, 3000);
+}
+
+
+function save() {
+    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+}
+
+
+function getData() {
+    const valeur = recherche.value.toLowerCase().trim();
+
+    return utilisateurs.filter(u =>
+        u.nom.toLowerCase().includes(valeur) ||
+        u.email.toLowerCase().includes(valeur)
+    );
+}
+
+
 form.addEventListener("submit", function (event) {
     event.preventDefault();
 
+    pageActuelle = 1;
+
+    const emailValue = email.value.trim();
+    const nomValue = nom.value.trim();
+
+    const existe = utilisateurs.some(u =>
+        u.email.toLowerCase() === emailValue.toLowerCase() &&
+        u.id !== idEdition
+    );
+
+    if (existe) {
+        afficherToast("❌ Cet email existe déjà !", "error");
+        return;
+    }
+
     const utilisateur = {
-        nom: nom.value,
-        email: email.value
+        id: idEdition ? idEdition : Date.now(),
+        nom: nomValue,
+        email: emailValue,
+        dateCreation: new Date().toISOString()
     };
 
-    // 👉 SI on est en mode modification
-    if (indexEdition !== null) {
-        utilisateurs[indexEdition] = utilisateur;
-        indexEdition = null;
+    if (idEdition !== null) {
+        const index = utilisateurs.findIndex(u => u.id === idEdition);
+        utilisateurs[index] = utilisateur;
+        idEdition = null;
     } else {
-        // 👉 sinon ajout normal
         utilisateurs.push(utilisateur);
     }
 
-    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+    save();
     afficherUtilisateurs();
+
+    afficherToast("✅ Utilisateur enregistré avec succès");
+
     form.reset();
+    nom.focus();
 });
+
+
 function afficherUtilisateurs() {
     tbody.innerHTML = "";
 
-    utilisateurs.forEach(function (user, index) {
+    const dataFiltrée = getData();
 
-        const ligne = `
+    const debut = (pageActuelle - 1) * parPage;
+    const pageUsers = dataFiltrée.slice(debut, debut + parPage);
+
+    totalUsers.textContent = utilisateurs.length;
+    totalResults.textContent = dataFiltrée.length;
+
+    pageUsers.forEach(user => {
+        tbody.innerHTML += `
             <tr>
-                <td>${index + 1}</td>
+                <td>${user.id}</td>
                 <td>${user.nom}</td>
                 <td>${user.email}</td>
-            <td>
-               <button onclick="modifierUtilisateur(${index})">Modifier</button>
-               <button onclick="supprimerUtilisateur(${index})">Supprimer</button>
-            </td>
-            </tr>
-        `;
-
-        tbody.innerHTML += ligne;
-    });
-}
-function supprimerUtilisateur(index) {
-    utilisateurs.splice(index, 1);
-    localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
-    afficherUtilisateurs();
-}
-function modifierUtilisateur(index) {
-    nom.value = utilisateurs[index].nom;
-    email.value = utilisateurs[index].email;
-
-    indexEdition = index;
-}
-recherche.addEventListener("input", function () {
-    const valeur = recherche.value.toLowerCase();
-
-    const filtres = utilisateurs.filter(function (user) {
-        return (
-            user.nom.toLowerCase().includes(valeur) ||
-            user.email.toLowerCase().includes(valeur)
-        );
-    });
-
-    afficherFiltres(filtres);
-});
-function afficherFiltres(liste) {
-    tbody.innerHTML = "";
-
-    liste.forEach(function (user, index) {
-
-        const ligne = `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${user.nom}</td>
-                <td>${user.email}</td>
+                <td>${new Date(user.dateCreation).toLocaleString()}</td>
                 <td>
-                    <button onclick="modifierUtilisateur(${index})">Modifier</button>
-                    <button onclick="supprimerUtilisateur(${index})">Supprimer</button>
+                    <button onclick="modifierUtilisateur(${user.id})">Modifier</button>
+                    <button onclick="supprimerUtilisateur(${user.id})">Supprimer</button>
                 </td>
             </tr>
         `;
-
-        tbody.innerHTML += ligne;
     });
+
+    afficherPagination(dataFiltrée.length);
 }
-toggleDark.addEventListener("click", function () {
+
+
+function supprimerUtilisateur(id) {
+    const confirmation = confirm("⚠️ Supprimer cet utilisateur ?");
+
+    if (!confirmation) return;
+
+    utilisateurs = utilisateurs.filter(u => u.id !== id);
+
+    save();
+
+    const totalPages = Math.ceil(getData().length / parPage);
+    if (pageActuelle > totalPages) pageActuelle = totalPages || 1;
+
+    afficherUtilisateurs();
+    afficherToast("🗑️ Utilisateur supprimé", "error");
+}
+
+
+function modifierUtilisateur(id) {
+    const user = utilisateurs.find(u => u.id === id);
+
+    nom.value = user.nom;
+    email.value = user.email;
+
+    idEdition = id;
+
+    nom.focus();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+
+recherche.addEventListener("input", function () {
+    pageActuelle = 1;
+    afficherUtilisateurs();
+});
+
+
+function afficherPagination(total) {
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+
+    const totalPages = Math.ceil(total / parPage);
+
+    if (totalPages <= 1) return;
+
+    pagination.innerHTML = `
+        <button onclick="changerPage(-1)">⬅</button>
+        <span> Page ${pageActuelle} / ${totalPages} </span>
+        <button onclick="changerPage(1)">➡</button>
+    `;
+}
+
+function changerPage(direction) {
+    const totalPages = Math.ceil(getData().length / parPage);
+
+    pageActuelle += direction;
+
+    if (pageActuelle < 1) pageActuelle = 1;
+    if (pageActuelle > totalPages) pageActuelle = totalPages;
+
+    afficherUtilisateurs();
+}
+
+
+function trierNom() {
+    const data = [...utilisateurs];
+
+    data.sort((a, b) =>
+        ordreNom
+            ? a.nom.localeCompare(b.nom)
+            : b.nom.localeCompare(a.nom)
+    );
+
+    ordreNom = !ordreNom;
+    utilisateurs = data;
+
+    pageActuelle = 1;
+    afficherUtilisateurs();
+}
+
+function trierEmail() {
+    const data = [...utilisateurs];
+
+    data.sort((a, b) =>
+        ordreEmail
+            ? a.email.localeCompare(b.email)
+            : b.email.localeCompare(a.email)
+    );
+
+    ordreEmail = !ordreEmail;
+    utilisateurs = data;
+
+    pageActuelle = 1;
+    afficherUtilisateurs();
+}
+
+function trierDate() {
+    const data = [...utilisateurs];
+
+    data.sort((a, b) =>
+        ordreDate
+            ? new Date(a.dateCreation) - new Date(b.dateCreation)
+            : new Date(b.dateCreation) - new Date(a.dateCreation)
+    );
+
+    ordreDate = !ordreDate;
+    utilisateurs = data;
+
+    pageActuelle = 1;
+    afficherUtilisateurs();
+}
+
+
+toggleDark.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
 });
+
+
 afficherUtilisateurs();

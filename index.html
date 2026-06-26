@@ -2,67 +2,88 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des utilisateurs</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
 
-    <h1>Gestion des utilisateurs</h1>
-    <button id="toggleDark">Mode sombre</button>
-    <form id="userForm">
+        <div class="header">
+            <h1>👥 Gestion des utilisateurs</h1>
+            <p>Gérez facilement vos utilisateurs</p>
+        </div>
 
-    <div class="input-group">
-        <label for="nom">Nom</label>
-        <input
-            type="text"
-            id="nom"
-            placeholder="Entrez votre nom"
-            required
-        >
+        <button id="toggleDark" type="button">Mode sombre</button>
+
+        <div class="stats">
+            <div class="card">
+                <h3 id="totalUsers">0</h3>
+                <p>Utilisateurs</p>
+            </div>
+
+            <div class="card">
+                <h3 id="totalResults">0</h3>
+                <p>Résultats trouvés</p>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form id="userForm">
+
+            <div class="input-group">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" placeholder="Entrez votre nom" required>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Entrez votre email" required>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Ajouter
+            </button>
+
+        </form>
+
+        <!-- SEARCH -->
+        <div class="input-group">
+            <label for="recherche">🔍 Rechercher</label>
+            <input type="text" id="recherche" placeholder="Nom ou email">
+        </div>
+
+        <!-- SORT -->
+        <div class="sort-container">
+            <button type="button" class="sort-btn" onclick="trierNom()">👤 Nom</button>
+            <button type="button" class="sort-btn" onclick="trierEmail()">📧 Email</button>
+            <button type="button" class="sort-btn" onclick="trierDate()">📅 Date</button>
+        </div>
+
+        <!-- TABLE -->
+        <table>
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Utilisateur</th>
+                    <th>Email</th>
+                    <th>Date création</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="tbody"></tbody>
+        </table>
+
+        <!-- PAGINATION -->
+        <div id="pagination"></div>
+
     </div>
 
-    <div class="input-group">
-        <label for="email">Email</label>
-        <input
-            type="email"
-            id="email"
-            placeholder="Entrez votre email"
-            required
-        >
-    </div>
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
 
-    <button type="submit">
-        Ajouter
-    </button>
-
-</form>
-<div class="input-group">
-    <label for="recherche">Rechercher</label>
-    <input
-        type="text"
-        id="recherche"
-        placeholder="Rechercher par nom ou email"
-    >
-</div>
-<table>
-
-    <thead>
-        <tr>
-            <th>N°</th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-
-    <tbody id="tbody">
-
-    </tbody>
-
-</table>
-    </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
