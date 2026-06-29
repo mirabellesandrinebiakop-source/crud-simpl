@@ -8,6 +8,27 @@
 </head>
 
 <body>
+
+<!-- 🔵 LANDING PAGE -->
+<div id="landing-page">
+    <div class="landing-container">
+
+        <h1>👥 Gestion des Utilisateurs</h1>
+
+        <p>
+            Gérez facilement vos utilisateurs avec une interface simple et moderne.
+        </p>
+
+        <button id="btn-start">
+            Commencer l'application
+        </button>
+
+    </div>
+</div>
+
+<!-- 🟢 APPLICATION -->
+<div id="app" style="display:none;">
+
     <div class="container">
 
         <div class="header">
@@ -29,7 +50,6 @@
             </div>
         </div>
 
-        <!-- FORM -->
         <form id="userForm">
 
             <div class="input-group">
@@ -46,22 +66,23 @@
                 Ajouter
             </button>
 
+            <button type="button" id="btnAnnuler" style="display:none;">
+                Annuler
+            </button>
+
         </form>
 
-        <!-- SEARCH -->
         <div class="input-group">
             <label for="recherche">🔍 Rechercher</label>
             <input type="text" id="recherche" placeholder="Nom ou email">
         </div>
 
-        <!-- SORT -->
         <div class="sort-container">
-            <button type="button" class="sort-btn" onclick="trierNom()">👤 Nom</button>
-            <button type="button" class="sort-btn" onclick="trierEmail()">📧 Email</button>
-            <button type="button" class="sort-btn" onclick="trierDate()">📅 Date</button>
+            <button type="button" onclick="trierNom()">👤 Nom</button>
+            <button type="button" onclick="trierEmail()">📧 Email</button>
+            <button type="button" onclick="trierDate()">📅 Date</button>
         </div>
 
-        <!-- TABLE -->
         <table>
             <thead>
                 <tr>
@@ -76,14 +97,17 @@
             <tbody id="tbody"></tbody>
         </table>
 
-        <!-- PAGINATION -->
         <div id="pagination"></div>
 
     </div>
 
-    <!-- TOAST -->
-    <div id="toast" class="toast"></div>
+</div>
 
-    <script src="script.js"></script>
+<!-- 🍞 TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- JS -->
+<script src="script.js"></script>
+
 </body>
 </html>

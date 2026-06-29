@@ -8,6 +8,7 @@ let ordreEmail = true;
 let ordreDate = true;
 
 const parPage = 5;
+
 const form = document.getElementById("userForm");
 const toggleDark = document.getElementById("toggleDark");
 const nom = document.getElementById("nom");
@@ -17,7 +18,7 @@ const tbody = document.getElementById("tbody");
 const totalUsers = document.getElementById("totalUsers");
 const totalResults = document.getElementById("totalResults");
 const toast = document.getElementById("toast");
-
+const btnAnnuler = document.getElementById("btnAnnuler");
 
 function afficherToast(message, type = "success") {
     toast.textContent = message;
@@ -28,11 +29,9 @@ function afficherToast(message, type = "success") {
     }, 3000);
 }
 
-
 function save() {
     localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
 }
-
 
 function getData() {
     const valeur = recherche.value.toLowerCase().trim();
@@ -43,7 +42,6 @@ function getData() {
     );
 }
 
-
 form.addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -51,6 +49,18 @@ form.addEventListener("submit", function (event) {
 
     const emailValue = email.value.trim();
     const nomValue = nom.value.trim();
+
+    if (nomValue.length < 2) {
+        afficherToast("❌ Le nom doit contenir au moins 2 caractères.", "error");
+        nom.focus();
+        return;
+    }
+
+    if (!isNaN(nomValue)) {
+        afficherToast("❌ Le nom ne peut pas être uniquement des chiffres.", "error");
+        nom.focus();
+        return;
+    }
 
     const existe = utilisateurs.some(u =>
         u.email.toLowerCase() === emailValue.toLowerCase() &&
@@ -86,7 +96,6 @@ form.addEventListener("submit", function (event) {
     nom.focus();
 });
 
-
 function afficherUtilisateurs() {
     tbody.innerHTML = "";
 
@@ -98,10 +107,10 @@ function afficherUtilisateurs() {
     totalUsers.textContent = utilisateurs.length;
     totalResults.textContent = dataFiltrée.length;
 
-    pageUsers.forEach(user => {
+    pageUsers.forEach((user, index) => {
         tbody.innerHTML += `
             <tr>
-                <td>${user.id}</td>
+                <td>${debut + index + 1}</td>
                 <td>${user.nom}</td>
                 <td>${user.email}</td>
                 <td>${new Date(user.dateCreation).toLocaleString()}</td>
@@ -116,23 +125,21 @@ function afficherUtilisateurs() {
     afficherPagination(dataFiltrée.length);
 }
 
-
 function supprimerUtilisateur(id) {
-    const confirmation = confirm("⚠️ Supprimer cet utilisateur ?");
-
-    if (!confirmation) return;
+    if (!confirm("⚠️ Supprimer cet utilisateur ?")) return;
 
     utilisateurs = utilisateurs.filter(u => u.id !== id);
-
     save();
 
-    const totalPages = Math.ceil(getData().length / parPage);
-    if (pageActuelle > totalPages) pageActuelle = totalPages || 1;
+    const totalPages = Math.ceil(getData().length / parPage) || 1;
+
+    if (pageActuelle > totalPages) {
+        pageActuelle = totalPages;
+    }
 
     afficherUtilisateurs();
     afficherToast("🗑️ Utilisateur supprimé", "error");
 }
-
 
 function modifierUtilisateur(id) {
     const user = utilisateurs.find(u => u.id === id);
@@ -141,17 +148,16 @@ function modifierUtilisateur(id) {
     email.value = user.email;
 
     idEdition = id;
+    btnAnnuler.style.display = "inline-block";
 
     nom.focus();
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-
 recherche.addEventListener("input", function () {
     pageActuelle = 1;
     afficherUtilisateurs();
 });
-
 
 function afficherPagination(total) {
     const pagination = document.getElementById("pagination");
@@ -179,59 +185,55 @@ function changerPage(direction) {
     afficherUtilisateurs();
 }
 
-
 function trierNom() {
-    const data = [...utilisateurs];
-
-    data.sort((a, b) =>
-        ordreNom
-            ? a.nom.localeCompare(b.nom)
-            : b.nom.localeCompare(a.nom)
+    utilisateurs.sort((a, b) =>
+        ordreNom ? a.nom.localeCompare(b.nom) : b.nom.localeCompare(a.nom)
     );
 
     ordreNom = !ordreNom;
-    utilisateurs = data;
-
     pageActuelle = 1;
     afficherUtilisateurs();
 }
 
 function trierEmail() {
-    const data = [...utilisateurs];
-
-    data.sort((a, b) =>
-        ordreEmail
-            ? a.email.localeCompare(b.email)
-            : b.email.localeCompare(a.email)
+    utilisateurs.sort((a, b) =>
+        ordreEmail ? a.email.localeCompare(b.email) : b.email.localeCompare(a.email)
     );
 
     ordreEmail = !ordreEmail;
-    utilisateurs = data;
-
     pageActuelle = 1;
     afficherUtilisateurs();
 }
 
 function trierDate() {
-    const data = [...utilisateurs];
-
-    data.sort((a, b) =>
+    utilisateurs.sort((a, b) =>
         ordreDate
             ? new Date(a.dateCreation) - new Date(b.dateCreation)
             : new Date(b.dateCreation) - new Date(a.dateCreation)
     );
 
     ordreDate = !ordreDate;
-    utilisateurs = data;
-
     pageActuelle = 1;
     afficherUtilisateurs();
 }
-
 
 toggleDark.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
 });
 
+btnAnnuler.addEventListener("click", function () {
+    form.reset();
+    idEdition = null;
+    btnAnnuler.style.display = "none";
+    nom.focus();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("btn-start")
+        .addEventListener("click", function () {
+            document.getElementById("landing-page").style.display = "none";
+            document.getElementById("app").style.display = "block";
+        });
+});
 
 afficherUtilisateurs();
