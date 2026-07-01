@@ -9,24 +9,153 @@
 
 <body>
 
-<!-- 🔵 LANDING PAGE -->
 <div id="landing-page">
-    <div class="landing-container">
 
-        <h1>👥 Gestion des Utilisateurs</h1>
+    <header class="navbar">
+
+        <div class="logo">
+            👥 Gestion
+        </div>
+
+        <nav>
+
+            <a href="#accueil">Accueil</a>
+
+            <a href="#apropos">À propos</a>
+
+            <a href="#services">Services</a>
+
+            <a href="#avis">Avis</a>
+
+            <a href="#contact">Contact</a>
+
+        </nav>
+
+    </header>
+
+    <section id="accueil" class="hero">
+
+        <div class="landing-container">
+
+            <h1>👥 Gestion des Utilisateurs</h1>
+
+            <p>
+                Gérez facilement vos utilisateurs avec une interface simple,
+                rapide et moderne.
+            </p>
+
+            <button id="btn-start">
+                Commencer l'application
+            </button>
+
+        </div>
+
+    </section>
+
+    <section id="apropos" class="section">
+
+        <h2>À propos</h2>
 
         <p>
-            Gérez facilement vos utilisateurs avec une interface simple et moderne.
+
+            Cette application permet d'ajouter, modifier, supprimer,
+            rechercher et organiser facilement les utilisateurs.
+
+            Elle a été développée pour simplifier la gestion quotidienne
+            des informations des utilisateurs.
+
         </p>
 
-        <button id="btn-start">
-            Commencer l'application
-        </button>
+    </section>
 
-    </div>
+    <section id="services" class="section">
+
+        <h2>Nos Services</h2>
+
+        <div class="services">
+
+            <div class="service-card">
+
+                <h3>➕ Ajouter</h3>
+
+                <p>Ajoutez rapidement un nouvel utilisateur.</p>
+
+            </div>
+
+            <div class="service-card">
+
+                <h3>✏ Modifier</h3>
+
+                <p>Mettez facilement à jour les informations.</p>
+
+            </div>
+
+            <div class="service-card">
+
+                <h3>🗑 Supprimer</h3>
+
+                <p>Supprimez les utilisateurs inutiles.</p>
+
+            </div>
+
+            <div class="service-card">
+
+                <h3>🔎 Rechercher</h3>
+
+                <p>Trouvez un utilisateur en quelques secondes.</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="avis" class="section">
+
+        <h2>Ce que disent nos utilisateurs</h2>
+
+        <div class="testimonial">
+
+            <p>
+
+                ⭐⭐⭐⭐⭐
+
+                Une application simple, rapide et très agréable à utiliser.
+
+            </p>
+
+            <h4>- Jean Dupont</h4>
+
+        </div>
+
+        <div class="testimonial">
+
+            <p>
+
+                ⭐⭐⭐⭐⭐
+
+                La gestion des utilisateurs est devenue beaucoup plus facile.
+
+            </p>
+
+            <h4>- Marie N.</h4>
+
+        </div>
+
+    </section>
+
+    <section id="contact" class="section">
+
+        <h2>Contact</h2>
+
+        <p>Email : contact@gestionutilisateurs.com</p>
+
+        <p>Téléphone : +237 6 XX XX XX XX</p>
+
+    </section>
+
 </div>
 
-<!-- 🟢 APPLICATION -->
 <div id="app" style="display:none;">
 
     <div class="container">
@@ -103,10 +232,8 @@
 
 </div>
 
-<!-- 🍞 TOAST -->
 <div id="toast" class="toast"></div>
 
-<!-- JS -->
 <script src="script.js"></script>
 
 </body>
